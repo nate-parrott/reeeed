@@ -33,7 +33,9 @@ public struct ReeeederView: View {
             .edgesIgnoringSafeArea(.all)
             .overlay(loader)
             .navigationTitle(title ?? url.hostWithoutWWW)
+        #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+        #endif
             .task {
                 do {
                     let result = try await Reeeed.fetchAndExtractContent(fromURL: url, theme: options.theme)
@@ -49,9 +51,9 @@ public struct ReeeederView: View {
         case .fetching:
             EmptyView()
         case .failedToExtractContent:
-            FallbackWebView(url: url, onLinkClicked: options.onLinkClicked, title: $titleFromFallbackWebView)
+            FallbackWebView(url: url, onLinkClicked: onLinkClicked, title: $titleFromFallbackWebView)
         case .extractedContent(let html, let baseURL, _):
-            ReaderWebView(baseURL: baseURL, html: html, onLinkClicked: options.onLinkClicked)
+            ReaderWebView(baseURL: baseURL, html: html, onLinkClicked: onLinkClicked)
         }
     }
 
@@ -75,6 +77,18 @@ public struct ReeeederView: View {
         case .extractedContent(_, _, let title):
             return title
         }
+    }
+
+    private func onLinkClicked(_ url: URL) {
+        if url == .exitReaderModeLink {
+            showNormalPage()
+        } else {
+            options.onLinkClicked?(url)
+        }
+    }
+
+    private func showNormalPage() {
+        status = .failedToExtractContent // TODO: Model this state correctly
     }
 }
 
@@ -136,7 +150,8 @@ private struct ReaderWebView: View {
 
     private func setupLinkHandler() {
         content.shouldBlockNavigation = { action -> Bool in
-            if action.navigationType == .linkActivated, let url = action.request.url {
+            if let url = action.request.url,
+                url == .exitReaderModeLink || action.navigationType == .linkActivated {
                 onLinkClicked?(url)
                 return true
             }

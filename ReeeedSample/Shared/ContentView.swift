@@ -15,16 +15,44 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                NavigationLink("Test Article") {
-                    ReeeederView(url: URL(string: "https://www.nytimes.com/2022/09/08/magazine/book-bans-texas.html")!)
-                }
-                NavigationLink("Unextractable Page") {
-                    ReeeederView(url: URL(string: "https://google.com")!)
-                }
+                ArticleButton(title: "Test Article", url: "https://www.nytimes.com/2022/09/08/magazine/book-bans-texas.html")
+                ArticleButton(title: "Unextractable Page", url: "https://google.com")
             }
             .frame(minWidth: 200)
         }
         .navigationTitle("Reader Mode Sample")
+    }
+}
+
+struct ArticleButton: View {
+    var title: String
+    var url: String
+
+    @State private var presented = false
+
+    var body: some View {
+        if isMac() {
+            NavigationLink(title) {
+                reader
+            }
+        } else {
+            Button(title, action: { presented = true })
+                .sheet(isPresented: $presented) {
+                    reader
+                }
+        }
+    }
+
+    @ViewBuilder private var reader: some View {
+        ReeeederView(url: URL(string: url)!, options: .init(onLinkClicked: linkClicked))
+    }
+
+    private func linkClicked(_ url: URL) {
+        #if os(macOS)
+        NSWorkspace.shared.open(url)
+        #else
+        UIApplication.shared.open(url)
+        #endif
     }
 }
 
