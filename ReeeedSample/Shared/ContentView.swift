@@ -11,29 +11,29 @@ import Reeeed
 struct ContentView: View {
     @State private var showReaderForURL: IdentifiableURL?
 
+    // TODO: Handle external links
     var body: some View {
-        Form {
-            Section {
-                Button("Test Article") {
-                    showReaderForURL = IdentifiableURL(url: URL(string: "https://www.nytimes.com/2022/09/08/magazine/book-bans-texas.html")!)
+        NavigationView {
+            List {
+                NavigationLink("Test Article") {
+                    ReeeederView(url: URL(string: "https://www.nytimes.com/2022/09/08/magazine/book-bans-texas.html")!)
                 }
-            } footer: {
-                Text("This presents an example article in Reader Mode")
-            }
-
-            Section {
-                Button("Unextractable Article") {
-                    showReaderForURL = IdentifiableURL(url: URL(string: "https://google.com")!)
+                NavigationLink("Unextractable Page") {
+                    ReeeederView(url: URL(string: "https://google.com")!)
                 }
-            } footer: {
-                Text("This presents an example page that we are not able to extract content for. It will show a webview as a fallback")
             }
+            .frame(minWidth: 200)
         }
         .navigationTitle("Reader Mode Sample")
-        .sheet(item: $showReaderForURL) { idURL in
-            ReeeederView(url: idURL.url)
-        }
     }
+}
+
+func isMac() -> Bool {
+    #if os(macOS)
+    return true
+    #else
+    return false
+    #endif
 }
 
 private struct IdentifiableURL: Identifiable {

@@ -29,10 +29,12 @@ class WebContent: NSObject, WKNavigationDelegate, WKUIDelegate, ObservableObject
 
     init(transparent: Bool = false, allowsInlinePlayback: Bool = false, autoplayAllowed: Bool = false) {
         let config = WKWebViewConfiguration()
+        #if os(iOS)
         config.allowsInlineMediaPlayback = allowsInlinePlayback
         if autoplayAllowed {
             config.mediaTypesRequiringUserActionForPlayback = []
         }
+        #endif
         webview = WKWebView(frame: .zero, configuration: config)
         webview.allowsBackForwardNavigationGestures = true
         self.transparent = transparent
@@ -60,10 +62,14 @@ class WebContent: NSObject, WKNavigationDelegate, WKUIDelegate, ObservableObject
             self?.info.isLoading = val.newValue ?? false
         }))
 
+#if os(macOS)
+        // no op
+        #else
         webview.scrollView.backgroundColor = nil
+        NotificationCenter.default.addObserver(self, selector: #selector(appDidForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        #endif
         updateTransparency()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
 
     var transparent: Bool = false {
@@ -73,11 +79,19 @@ class WebContent: NSObject, WKNavigationDelegate, WKUIDelegate, ObservableObject
     }
 
     private func updateTransparency() {
-        webview.backgroundColor = transparent ? nil : UIColor.white
+        #if os(macOS)
+        // TODO: Implement transparency on macOS
+        #else
+        webview.backgroundColor = transparent ? nil : UINSColor.white
         webview.isOpaque = !transparent
+        #endif
     }
 
+    #if os(macOS)
+    var view: NSView { webview }
+    #else
     var view: UIView { webview }
+    #endif
 
     func goBack() {
         webview.goBack()

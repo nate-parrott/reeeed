@@ -17,7 +17,7 @@ extension UINSColor {
         var b: CGFloat = 0
         var o: CGFloat = 0
 #if os(macOS)
-        getRed(&r, green: &g, blue: &b, alpha: &o)
+        usingColorSpace(.deviceRGB)!.getRed(&r, green: &g, blue: &b, alpha: &o)
 #else
         guard getRed(&r, green: &g, blue: &b, alpha: &o) else {
             // You can handle the failure here as you want

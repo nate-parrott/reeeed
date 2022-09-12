@@ -14,6 +14,7 @@
 		5F85075A28CECE3700BC14A9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F85074828CECE3700BC14A9 /* Assets.xcassets */; };
 		5F85075B28CECE3700BC14A9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5F85074828CECE3700BC14A9 /* Assets.xcassets */; };
 		5F85076828CED71C00BC14A9 /* Reeeed in Frameworks */ = {isa = PBXBuildFile; productRef = 5F85076728CED71C00BC14A9 /* Reeeed */; };
+		5F85076A28CEDAE100BC14A9 /* Reeeed in Frameworks */ = {isa = PBXBuildFile; productRef = 5F85076928CEDAE100BC14A9 /* Reeeed */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F85076A28CEDAE100BC14A9 /* Reeeed in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,6 +130,9 @@
 			dependencies = (
 			);
 			name = "ReeeedSample (macOS)";
+			packageProductDependencies = (
+				5F85076928CEDAE100BC14A9 /* Reeeed */,
+			);
 			productName = "ReeeedSample (macOS)";
 			productReference = 5F85075328CECE3700BC14A9 /* ReeeedSample.app */;
 			productType = "com.apple.product-type.application";
@@ -466,6 +471,10 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		5F85076728CED71C00BC14A9 /* Reeeed */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Reeeed;
+		};
+		5F85076928CEDAE100BC14A9 /* Reeeed */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Reeeed;
 		};

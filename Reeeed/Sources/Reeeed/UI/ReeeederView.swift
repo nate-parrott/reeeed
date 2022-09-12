@@ -33,6 +33,7 @@ public struct ReeeederView: View {
             .edgesIgnoringSafeArea(.all)
             .overlay(loader)
             .navigationTitle(title ?? url.hostWithoutWWW)
+            .navigationBarTitleDisplayMode(.inline)
             .task {
                 do {
                     let result = try await Reeeed.fetchAndExtractContent(fromURL: url, theme: options.theme)
@@ -54,6 +55,7 @@ public struct ReeeederView: View {
         }
     }
 
+    // TODO: Show loader while fallback page is loading
     @ViewBuilder private var loader: some View {
         ReaderPlaceholder(theme: options.theme)
             .opacity(showLoader ? 1 : 0)
@@ -111,6 +113,7 @@ private struct ReaderWebView: View {
     var baseURL: URL
     var html: String
     var onLinkClicked: ((URL) -> Void)?
+    // TODO: Handle "wants to exit reader"
 
     @StateObject private var content = WebContent(transparent: true)
 

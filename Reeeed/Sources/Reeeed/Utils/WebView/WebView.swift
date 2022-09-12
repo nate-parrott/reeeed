@@ -14,7 +14,45 @@ enum WebViewEvent: Equatable {
 }
 
 #if os(macOS)
-// TODO
+struct WebView: NSViewRepresentable {
+    typealias NSViewType = _WebViewContainer
+
+    var content: WebContent
+    var onEvent: ((WebViewEvent) -> Void)? = nil
+
+    func makeNSView(context: Context) -> _WebViewContainer {
+        return _WebViewContainer()
+    }
+
+    func updateNSView(_ nsView: _WebViewContainer, context: Context) {
+        nsView.contentView = (content.view as! WKWebView)
+        nsView.onEvent = onEvent
+    }
+}
+
+class _WebViewContainer: NSView {
+    var onEvent: ((WebViewEvent) -> Void)?
+    // TODO: Implement scroll  events
+    private var webviewSubs = Set<NSKeyValueObservation>()
+
+    var contentView: WKWebView? {
+        didSet(old) {
+            guard contentView != old else { return }
+            webviewSubs.removeAll()
+            old?.removeFromSuperview()
+
+            if let view = contentView {
+                addSubview(view)
+            }
+        }
+    }
+
+    override func layout() {
+        super.layout()
+        contentView?.frame = bounds
+    }
+}
+
 #else
 struct WebView: UIViewRepresentable {
     typealias UIViewType = _WebViewContainer
