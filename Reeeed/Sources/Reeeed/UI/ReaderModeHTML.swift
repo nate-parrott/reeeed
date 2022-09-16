@@ -185,6 +185,8 @@ figcaption, cite {
     }
 }
 
+\(theme.additionalCSS ?? "")
+
 </style>
 <body>
 <div id='__content' style='opacity: 0'>

@@ -14,19 +14,22 @@ public struct ReaderTheme {
     public var background: UINSColor // page background
     public var background2: UINSColor // used for buttons
     public var link: UINSColor
+    public var additionalCSS: String?
 
     public init(
         foreground: UINSColor = .reader_Primary,
         foreground2: UINSColor = .reader_Secondary,
         background: UINSColor = .reader_Background,
         background2: UINSColor = .reader_Background2,
-        link: UINSColor = .systemBlue
+        link: UINSColor = .systemBlue,
+        additionalCSS: String? = nil
     ) {
         self.foreground = foreground
         self.foreground2 = foreground2
         self.background = background
         self.background2 = background2
         self.link = link
+        self.additionalCSS = additionalCSS
     }
 }
 

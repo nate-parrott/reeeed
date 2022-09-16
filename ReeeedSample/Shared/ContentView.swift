@@ -16,6 +16,7 @@ struct ContentView: View {
         NavigationView {
             List {
                 ArticleButton(title: "Test Article", url: "https://www.nytimes.com/2022/09/08/magazine/book-bans-texas.html")
+                ArticleButton(title: "Test Article (Custom Theme)", url: "https://www.nytimes.com/2022/09/08/magazine/book-bans-texas.html", theme: .serif)
                 ArticleButton(title: "Unextractable Page", url: "https://google.com")
             }
             .frame(minWidth: 200)
@@ -27,6 +28,7 @@ struct ContentView: View {
 struct ArticleButton: View {
     var title: String
     var url: String
+    var theme: ReaderTheme = .init()
 
     @State private var presented = false
 
@@ -44,7 +46,7 @@ struct ArticleButton: View {
     }
 
     @ViewBuilder private var reader: some View {
-        ReeeederView(url: URL(string: url)!, options: .init(onLinkClicked: linkClicked))
+        ReeeederView(url: URL(string: url)!, options: .init(theme: theme, onLinkClicked: linkClicked))
     }
 
     private func linkClicked(_ url: URL) {
@@ -54,6 +56,14 @@ struct ArticleButton: View {
         UIApplication.shared.open(url)
         #endif
     }
+}
+
+extension ReaderTheme {
+    static let serif: ReaderTheme = .init(additionalCSS: """
+    body {
+        font-family: serif;
+    }
+""")
 }
 
 func isMac() -> Bool {
