@@ -106,8 +106,8 @@ Of course, these libraries aren't perfect. If you give them a page that is not a
 
 ## Things I'd like to improve
 
-- [] The Mercury and Readability JS packages are a few months old. They need to be updated. Ideally, this would be (semi) automated.
-- [] The API could use a bit of cleanup. The naming and code structure is a bit inconsistent.
-- [] Reeeed depends on two different HTML manipulation libraries: [SwiftSoup](https://github.com/scinfu/SwiftSoup) and [Fuzi](https://github.com/cezheng/Fuzi). Fuzi is much faster, so I'd like to migrate the remaining `SwiftSoup` code to use it ASAP, and remove the dependency.
-- [] Some day, I'd like to write a fully-native renderer for extracted content.
-- [] Tests would be nice 😊
+- [ ] The Mercury and Readability JS packages are a few months old. They need to be updated. Ideally, this would be (semi) automated.
+- [ ] The API could use a bit of cleanup. The naming and code structure is a bit inconsistent.
+- [ ] Reeeed depends on two different HTML manipulation libraries: [SwiftSoup](https://github.com/scinfu/SwiftSoup) and [Fuzi](https://github.com/cezheng/Fuzi). Fuzi is much faster, so I'd like to migrate the remaining `SwiftSoup` code to use it ASAP, and remove the dependency.
+- [ ] Some day, I'd like to write a fully-native renderer for extracted content.
+- [ ] Tests would be nice 😊
