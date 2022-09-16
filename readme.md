@@ -4,9 +4,10 @@
 
 `Reeeed` is a Swift implementation of Reader Mode: you give it the URL to an article on the web, it extracts the content — without navigation, or any other junk — and shows it to you in a standard format. It's faster, more consistent and less distracting than loading a full webpage. You can pass `Reeeed` a URL, and get back simple HTML to display. Or you can present the all-inclusive SwiftUI `ReeeederView` that handles everything for you.
 
-**Features**
-
 ![Screenshot of the Reader Mode on Mac](Images/mac.jpg)
+
+
+## Features
 
 - `ReeeederView`: a simple SwiftUI Reader View that works on iOS and macOS. Just pass a URL and present it.
 - `Reeeeder` extractor: pass a URL and receive cleaned HTML. You also get metadata, like the page's title, author and hero image.
