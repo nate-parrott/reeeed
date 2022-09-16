@@ -103,3 +103,11 @@ Task {
 All the good libraries for extracting an article from a page, like [Mercury](https://github.com/postlight/parser) and [Readability](https://github.com/mozilla/readability), are written in Javascript. So `reeeed` opens a hidden webview, loads one of those parsers, and then uses it to process HTML. A page's full, messy HTML goes in, and — like magic — _just the content_ comes back out. You get consistent, simple HTML, and you get it fast.
 
 Of course, these libraries aren't perfect. If you give them a page that is not an article — or an article that's just _too_ messy — you'll get nothing. In that case, `reeeed` will fall back to displaying the full webpage. 
+
+## Things I'd like to improve
+
+[] The Mercury and Readability JS packages are a few months old. They need to be updated. Ideally, this would be (semi) automated.
+[] The API could use a bit of cleanup. The naming and code structure is a bit inconsistent.
+[] Reeeed depends on two different HTML manipulation libraries: [SwiftSoup](https://github.com/scinfu/SwiftSoup) and [Fuzi](https://github.com/cezheng/Fuzi). Fuzi is much faster, so I'd like to migrate the remaining `SwiftSoup` code to use it ASAP, and remove the dependency.
+[] Some day, I'd like to write a fully-native renderer for extracted content.
+[] Tests would be nice 😊
