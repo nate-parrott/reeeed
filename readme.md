@@ -6,7 +6,7 @@
 
 **Features**
 
-![Screenshot of the Reader Mode on Mac](Images/mac.png)
+![Screenshot of the Reader Mode on Mac](Images/mac.jpg)
 
 - `ReeeederView`: a simple SwiftUI Reader View that works on iOS and macOS. Just pass a URL and present it.
 - `Reeeeder` extractor: pass a URL and receive cleaned HTML. You also get metadata, like the page's title, author and hero image.
