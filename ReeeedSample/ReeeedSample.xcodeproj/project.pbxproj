@@ -24,8 +24,8 @@
 		5F85074D28CECE3700BC14A9 /* ReeeedSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReeeedSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F85075328CECE3700BC14A9 /* ReeeedSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReeeedSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F85075528CECE3700BC14A9 /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
-		5F85076428CECE4000BC14A9 /* Reeeed */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Reeeed; path = ../Reeeed; sourceTree = "<group>"; };
 		5F85076528CECE7700BC14A9 /* ReeeedSample--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "ReeeedSample--iOS--Info.plist"; sourceTree = "<group>"; };
+		5F93EB6728D41B4B00A8ECEE /* reeeed */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = reeeed; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,8 +51,8 @@
 		5F85074028CECE3600BC14A9 = {
 			isa = PBXGroup;
 			children = (
+				5F93EB6628D41B4B00A8ECEE /* Packages */,
 				5F85076528CECE7700BC14A9 /* ReeeedSample--iOS--Info.plist */,
-				5F85076428CECE4000BC14A9 /* Reeeed */,
 				5F85074528CECE3600BC14A9 /* Shared */,
 				5F85075428CECE3700BC14A9 /* macOS */,
 				5F85074E28CECE3700BC14A9 /* Products */,
@@ -92,6 +92,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5F93EB6628D41B4B00A8ECEE /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				5F93EB6728D41B4B00A8ECEE /* reeeed */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
