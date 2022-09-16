@@ -12,6 +12,13 @@
 - `Reeeeder` extractor: pass a URL and receive cleaned HTML. You also get metadata, like the page's title, author and hero image.
 - The generated HTML supports **custom themes**. Default _and_ custom themes support **dark mode** out of the box.
 
+## Installation
+
+1. In Xcode's menu, click File → Swift Packages → Add Package Dependency...
+2. Paste the URL of this repository: `https://github.com/nate-parrott/reeeed`
+
+Alternatively, add the dependency manually in your `Package.swift`: `.package(url: "https://github.com/nate-parrott/reeeed", from: "1.1.0")`
+
 ## Usage
 
 **Simplest implementation: `ReeeederView`**
