@@ -104,9 +104,16 @@ All the good libraries for extracting an article from a page, like [Mercury](htt
 
 Of course, these libraries aren't perfect. If you give them a page that is not an article — or an article that's just _too_ messy — you'll get nothing. In that case, `reeeed` will fall back to displaying the full webpage. 
 
+## Updating the Postlight Parser (formerly Mercury) JS
+
+**Last updated September 18, 2022 (v2.2.2)**
+
+1. Replace the `Sources/Reeeed/JS/mercury.web.js` file with a new one downloaded from [the project repo](https://github.com/postlight/parser/tree/main/dist)
+2. Ensure the demo app works.
+
 ## Things I'd like to improve
 
-- [ ] The Mercury and Readability JS packages are a few months old. They need to be updated. Ideally, this would be (semi) automated.
+- [ ] Readability JS package is a few months old. They need to be updated. Ideally, this would be (semi) automated.
 - [ ] The API could use a bit of cleanup. The naming and code structure is a bit inconsistent.
 - [ ] Reeeed depends on two different HTML manipulation libraries: [SwiftSoup](https://github.com/scinfu/SwiftSoup) and [Fuzi](https://github.com/cezheng/Fuzi). Fuzi is much faster, so I'd like to migrate the remaining `SwiftSoup` code to use it ASAP, and remove the dependency.
 - [ ] Some day, I'd like to write a fully-native renderer for extracted content.
