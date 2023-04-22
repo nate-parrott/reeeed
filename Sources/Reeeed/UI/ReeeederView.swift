@@ -3,9 +3,11 @@ import SwiftUI
 public struct ReeeederViewOptions {
     public var theme: ReaderTheme
     public var onLinkClicked: ((URL) -> Void)?
-    public init(theme: ReaderTheme = .init(), onLinkClicked: ((URL) -> Void)? = nil) {
+    public var onEvent: ((WebViewEvent) -> Void)?
+    public init(theme: ReaderTheme = .init(), onLinkClicked: ((URL) -> Void)? = nil, onEvent: ((WebViewEvent) -> Void)? = nil) {
         self.theme = theme
         self.onLinkClicked = onLinkClicked
+        self.onEvent = onEvent
     }
 }
 
@@ -95,12 +97,13 @@ public struct ReeeederView: View {
 private struct FallbackWebView: View {
     var url: URL
     var onLinkClicked: ((URL) -> Void)?
+    var onEvent: ((WebViewEvent) -> Void)?
     @Binding var title: String?
 
     @StateObject private var content = WebContent()
 
     var body: some View {
-        WebView(content: content)
+        WebView(content: content, onEvent: self.onEvent)
             .onAppear {
                 setupLinkHandler()
             }
@@ -127,12 +130,13 @@ private struct ReaderWebView: View {
     var baseURL: URL
     var html: String
     var onLinkClicked: ((URL) -> Void)?
+    var onEvent: ((WebViewEvent) -> Void)?
     // TODO: Handle "wants to exit reader"
 
     @StateObject private var content = WebContent(transparent: true)
 
     var body: some View {
-        WebView(content: content)
+        WebView(content: content, onEvent: self.onEvent)
             .onAppear {
                 setupLinkHandler()
             }

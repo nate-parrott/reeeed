@@ -2,8 +2,8 @@ import WebKit
 import SwiftUI
 import Combine
 
-enum WebViewEvent: Equatable {
-    struct ScrollInfo: Equatable {
+public enum WebViewEvent: Equatable {
+    public struct ScrollInfo: Equatable {
         var contentOffset: CGPoint
         var contentSize: CGSize
     }
@@ -11,6 +11,7 @@ enum WebViewEvent: Equatable {
     case scrolledDown
     case scrolledUp
     case scrollPositionChanged(ScrollInfo)
+    case webViewUpdated(WKWebView)
 }
 
 #if os(macOS)
@@ -27,6 +28,9 @@ struct WebView: NSViewRepresentable {
     func updateNSView(_ nsView: _WebViewContainer, context: Context) {
         nsView.contentView = (content.view as! WKWebView)
         nsView.onEvent = onEvent
+        // Force unwrapping here since the view as already been
+        // unwrapped before.
+        nsView.onEvent(.webViewUpdated(nsView.contentView!))
     }
 }
 
@@ -67,6 +71,9 @@ struct WebView: UIViewRepresentable {
     func updateUIView(_ uiView: _WebViewContainer, context: Context) {
         uiView.contentView = (content.view as! WKWebView)
         uiView.onEvent = onEvent
+        // Force unwrapping here since the view as already been
+        // unwrapped before.
+        uiView.onEvent?(.webViewUpdated(uiView.contentView!))
     }
 }
 
