@@ -1,5 +1,6 @@
 import Foundation
 import SwiftSoup
+import Fuzi
 
 extension Reeeed {
     public static func wrapHTMLInReaderStyling(html: String, title: String, baseURL: URL?, author: String?, heroImage: URL?, includeExitReaderButton: Bool = true, theme: ReaderTheme = .init()) -> String {
@@ -15,9 +16,7 @@ extension Reeeed {
         let heroHTML: String = {
             if let heroImage = heroImage {
                 do {
-                    let firstImageIndex = try numberOfElementsUntilFirstImage(
-                        tags: Set(["p", "h1", "h2", "ul", "ol", "table"]),
-                        html: html)
+                    let firstImageIndex = try estimateLinesUntilFirstImage(html: html)
                     logger.info("First image index: \(firstImageIndex ?? 999)")
                     // If there is no image in the first 10 elements, insert the hero image:
                     if (firstImageIndex ?? 999) > 10 {
@@ -86,6 +85,7 @@ body {
 #__content {
     line-height: 1.5;
     font-size: 1.1em;
+    overflow-x: hidden;
 }
 
 @media screen and (min-width: 650px) {
@@ -217,43 +217,91 @@ public extension URL {
     static let exitReaderModeLink = URL(string: "feeeed://exit-reader-mode")!
 }
 
-private func numberOfElementsUntilFirstImage(tags: Set<String>, html: String) throws -> Int? {
-    var elCount = 0
-    var firstImageIndex: Int? = nil
+//private func numberOfElementsUntilFirstImage(tags: Set<String>, html: String) throws -> Int? {
+//    var elCount = 0
+//    var firstImageIndex: Int? = nil
+//
+//    let soup = try SwiftSoup.parse(html)
+//    try soup.traverseElements { element in
+//        let tagName = element.tagName()
+//        if tagName == "img", firstImageIndex == nil {
+//            firstImageIndex = elCount
+//        } else if tags.contains(tagName) {
+//            elCount += 1
+//        }
+//    }
+//
+//    return firstImageIndex
+//}
 
-    let soup = try SwiftSoup.parse(html)
-    try soup.traverseElements { element in
-        let tagName = element.tagName()
-        if tagName == "img", firstImageIndex == nil {
-            firstImageIndex = elCount
-        } else if tags.contains(tagName) {
-            elCount += 1
+private func estimateLinesUntilFirstImage(html: String) throws -> Int? {
+    let doc = try HTMLDocument(data: html.data(using: .utf8)!)
+    var lines = 0
+    var linesBeforeFirst: Int?
+    try doc.root?.traverse { el in
+        if el.tag?.lowercased() == "img", linesBeforeFirst == nil {
+            linesBeforeFirst = lines
+        }
+        lines += el.estLineCount
+    }
+    return linesBeforeFirst
+
+//    var lines = 0
+//
+//    let soup = try SwiftSoup.parse(html)
+//    try soup.traverseElements { element in
+//        let tagName = element.tagName()
+//        if tagName == "img" {
+//            return lines
+//        } else if tags.contains(tagName) {
+//            elCount += 1
+//        }
+//    }
+//
+//    return firstImageIndex
+}
+
+extension Fuzi.XMLElement {
+    func traverse(_ block: (Fuzi.XMLElement) -> Void) throws {
+        for child in children {
+            block(child)
+            try child.traverse(block)
         }
     }
-
-    return firstImageIndex
-}
-
-extension SwiftSoup.Node {
-    func traverseElements(_ block: @escaping (Element) -> Void) throws {
-        let visitor = BlockNodeVisitor(headCallback: { (node, _depth) in
-            if let el = node as? Element {
-                block(el)
+    var estLineCount: Int {
+        if let tag = self.tag?.lowercased() {
+            switch tag {
+            case "video", "embed": return 5
+            case "h1", "h2", "h3", "h4", "h5", "h6", "p", "li":
+                return Int(ceil(Double(stringValue.count) / 60)) + 1
+            case "tr": return 1
+            default: return 0
             }
-        }, tailCallback: nil)
-        try traverse(visitor)
+        }
+        return 0
     }
 }
 
-private struct BlockNodeVisitor: NodeVisitor {
-    var headCallback: ((Node, Int) -> Void)?
-    var tailCallback: ((Node, Int) -> Void)?
-
-    func head(_ node: Node, _ depth: Int) throws {
-        headCallback?(node, depth)
-    }
-
-    func tail(_ node: Node, _ depth: Int) throws {
-        tailCallback?(node, depth)
-    }
-}
+//extension SwiftSoup.Node {
+//    func traverseElements(_ block: @escaping (Element) -> Void) throws {
+//        let visitor = BlockNodeVisitor(headCallback: { (node, _depth) in
+//            if let el = node as? Element {
+//                block(el)
+//            }
+//        }, tailCallback: nil)
+//        try traverse(visitor)
+//    }
+//}
+//
+//private struct BlockNodeVisitor: NodeVisitor {
+//    var headCallback: ((Node, Int) -> Void)?
+//    var tailCallback: ((Node, Int) -> Void)?
+//
+//    func head(_ node: Node, _ depth: Int) throws {
+//        headCallback?(node, depth)
+//    }
+//
+//    func tail(_ node: Node, _ depth: Int) throws {
+//        tailCallback?(node, depth)
+//    }
+//}
