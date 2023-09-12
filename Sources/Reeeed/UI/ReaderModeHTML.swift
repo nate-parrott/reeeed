@@ -34,7 +34,7 @@ extension Reeeed {
         let subtitle: String = {
             var partsHTML = [String]()
 
-            let separatorHTML = "<span class='__separator'>—</span>"
+            let separatorHTML = "<span class='__separator'> · </span>"
             func appendSeparatorIfNecessary() {
                 if partsHTML.count > 0 {
                     partsHTML.append(separatorHTML)
@@ -46,6 +46,10 @@ extension Reeeed {
             if let date {
                 appendSeparatorIfNecessary()
                 partsHTML.append(DateFormatter.shortDateOnly.string(from: date))
+            }
+            if let host = baseURL?.hostWithoutWWW {
+                appendSeparatorIfNecessary()
+                partsHTML.append(host)
             }
             if partsHTML.count == 0 { return "" }
             return "<p class='__subtitle'>\(partsHTML.joined())</p>"
@@ -86,7 +90,6 @@ body {
     background-color: \(bgLight);
     overflow-wrap: break-word;
     font: -apple-system-body;
-    font-family: "Iowan Old Style";
 }
 
 .__hero {
@@ -109,9 +112,9 @@ body {
     #__content { font-size: 1.35em; line-height: 1.5; }
 }
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
     line-height: 1.2;
-    font: -apple-system-headline;
+    font-family: -apple-system;
     font-size: 1.5em;
     font-weight: 800;
 }
@@ -150,7 +153,7 @@ figcaption, cite {
 .__subtitle {
     font-weight: bold;
     vertical-align: baseline;
-    font-family: "Helvetica Neue";
+    opacity: 0.5;
 }
 
 .__subtitle .__icon {
