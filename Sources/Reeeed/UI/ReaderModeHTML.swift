@@ -3,7 +3,7 @@ import SwiftSoup
 import Fuzi
 
 extension Reeeed {
-    public static func wrapHTMLInReaderStyling(html: String, title: String, baseURL: URL?, author: String?, heroImage: URL?, includeExitReaderButton: Bool = true, theme: ReaderTheme = .init()) -> String {
+    public static func wrapHTMLInReaderStyling(html: String, title: String, baseURL: URL?, author: String?, heroImage: URL?, includeExitReaderButton: Bool = true, theme: ReaderTheme = .init(), date: Date? = nil) -> String {
         let escapedTitle = Entities.escape(title.byStrippingSiteNameFromPageTitle)
         let logger = Reeeed.logger
 
@@ -32,20 +32,36 @@ extension Reeeed {
         }()
 
         let subtitle: String = {
-            var parts = [String]()
-            if let author = author {
-                parts.append(author)
+            var partsHTML = [String]()
+
+            let separatorHTML = "<span class='__separator'>—</span>"
+            func appendSeparatorIfNecessary() {
+                if partsHTML.count > 0 {
+                    partsHTML.append(separatorHTML)
+                }
             }
-            if let url = baseURL {
-                parts.append(url.hostWithoutWWW)
+            if let author {
+                partsHTML.append(Entities.escape(author))
             }
-            if parts.count == 0 {
-                return ""
+            if let date {
+                appendSeparatorIfNecessary()
+                partsHTML.append(DateFormatter.shortDateOnly.string(from: date))
             }
-            let text = parts.joined(separator: " • ")
-            let textEscaped = Entities.escape(text)
-            return "<p class='__subtitle'>\(textEscaped)</p>"
+            if partsHTML.count == 0 { return "" }
+            return "<p class='__subtitle'>\(partsHTML.joined())</p>"
         }()
+
+//        let siteLine: String = {
+//            if let url = baseURL {
+//                var partsHTML = [String]()
+//                if let icon = url.googleFaviconURL {
+//                    partsHTML.append("<img class='__icon' src=\"\(Entities.escape(icon.absoluteString))\" />")
+//                }
+//                partsHTML.append(url.hostWithoutWWW)
+//                return "<div class='__site'>" + partsHTML.joined() + "</div>"
+//            }
+//            return ""
+//        }()
 
         let exitReaderButton: String
         if includeExitReaderButton {
@@ -70,6 +86,7 @@ body {
     background-color: \(bgLight);
     overflow-wrap: break-word;
     font: -apple-system-body;
+    font-family: "Iowan Old Style";
 }
 
 .__hero {
@@ -93,7 +110,10 @@ body {
 }
 
 h1 {
+    line-height: 1.2;
+    font: -apple-system-headline;
     font-size: 1.5em;
+    font-weight: 800;
 }
 
 img, iframe, object, video {
@@ -128,10 +148,24 @@ figcaption, cite {
 }
 
 .__subtitle {
-    opacity: 0.5;
-    font-size: small;
-    text-transform: uppercase;
     font-weight: bold;
+    vertical-align: baseline;
+    font-family: "Helvetica Neue";
+}
+
+.__subtitle .__icon {
+    width: 1.2em;
+    height: 1.2em;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 3px;
+    margin-right: 0.3em;
+    position: relative;
+    top: 0.3em;
+}
+
+.__subtitle .__separator {
+    opacity: 0.5;
 }
 
 #__content {
@@ -191,6 +225,7 @@ figcaption, cite {
 <body>
 <div id='__content' style='opacity: 0'>
     \(heroHTML)
+    
     <h1>\(escapedTitle)</h1>
         \(subtitle)
         \(html)
@@ -217,22 +252,14 @@ public extension URL {
     static let exitReaderModeLink = URL(string: "feeeed://exit-reader-mode")!
 }
 
-//private func numberOfElementsUntilFirstImage(tags: Set<String>, html: String) throws -> Int? {
-//    var elCount = 0
-//    var firstImageIndex: Int? = nil
-//
-//    let soup = try SwiftSoup.parse(html)
-//    try soup.traverseElements { element in
-//        let tagName = element.tagName()
-//        if tagName == "img", firstImageIndex == nil {
-//            firstImageIndex = elCount
-//        } else if tags.contains(tagName) {
-//            elCount += 1
-//        }
-//    }
-//
-//    return firstImageIndex
-//}
+extension URL {
+    var googleFaviconURL: URL? {
+        if let host {
+            return URL(string: "https://www.google.com/s2/favicons?domain=\(host)&sz=64")
+        }
+        return nil
+    }
+}
 
 private func estimateLinesUntilFirstImage(html: String) throws -> Int? {
     let doc = try HTMLDocument(data: html.data(using: .utf8)!)
@@ -280,6 +307,15 @@ extension Fuzi.XMLElement {
         }
         return 0
     }
+}
+
+extension DateFormatter {
+    static let shortDateOnly: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        return formatter
+    }()
 }
 
 //extension SwiftSoup.Node {

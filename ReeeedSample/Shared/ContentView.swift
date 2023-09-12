@@ -18,6 +18,7 @@ struct ContentView: View {
                 ArticleButton(title: "Test Article (NYT)", url: "https://www.nytimes.com/2022/09/08/magazine/book-bans-texas.html")
                 ArticleButton(title: "Test Article (NYT, Custom Theme)", url: "https://www.nytimes.com/2022/09/08/magazine/book-bans-texas.html", theme: .serif)
                 ArticleButton(title: "Test Article (Verge)", url: "https://www.theverge.com/2023/9/3/23857664/california-forever-tech-billionaire-secret-city")
+                ArticleButton(title: "Test Article (image at top)", url: "https://9to5mac.com/2023/09/08/apple-iphone-15-event-what-to-expect/")
                 ArticleButton(title: "Unextractable Page", url: "https://google.com")
             }
             .frame(minWidth: 200)
