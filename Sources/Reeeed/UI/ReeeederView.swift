@@ -38,12 +38,14 @@ public struct ReeeederView: View {
         #endif
             .task {
                 do {
-                    let result = try await Reeeed.fetchAndExtractContent(fromURL: url, theme: options.theme)
-                    self.status = .extractedContent(html: result.styledHTML, baseURL: result.baseURL, title: result.title)
+                    let result = try await Reeeed.fetchAndExtractContent(fromURL: url)
+                    let html = result.html(includeExitReaderButton: true, theme: options.theme)
+                    self.status = .extractedContent(html: html, baseURL: result.url, title: result.title)
                 } catch {
                     status = .failedToExtractContent
                 }
             }
+        // TODO: Respond to dynamic theme changes
     }
 
     @ViewBuilder private var content: some View {

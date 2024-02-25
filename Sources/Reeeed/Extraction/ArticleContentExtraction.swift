@@ -8,7 +8,7 @@ public enum ExtractionError: Error {
     case MissingExtractionData
 }
 
-public struct ExtractedContent: Equatable {
+public struct ExtractedContent: Equatable, Codable {
     // See https://github.com/postlight/mercury-parser#usage
     public var content: String?
     public var author: String?

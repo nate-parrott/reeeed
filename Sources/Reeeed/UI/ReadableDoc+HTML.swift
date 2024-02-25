@@ -2,10 +2,11 @@ import Foundation
 import SwiftSoup
 import Fuzi
 
-extension Reeeed {
-    public static func wrapHTMLInReaderStyling(html: String, title: String, baseURL: URL?, author: String?, heroImage: URL?, includeExitReaderButton: Bool = true, theme: ReaderTheme = .init(), date: Date? = nil) -> String {
-        let escapedTitle = Entities.escape(title.byStrippingSiteNameFromPageTitle)
-        let logger = Reeeed.logger
+
+extension ReadableDoc {
+    public func html(includeExitReaderButton: Bool, theme: ReaderTheme = .init()) -> String {
+        let escapedTitle = Entities.escape(title?.byStrippingSiteNameFromPageTitle ?? "")
+//        let logger = Reeeed.logger
 
         let (fgLight, fgDark) = theme.foreground.hexPair
         let (fg2Light, fg2Dark) = theme.foreground2.hexPair
@@ -13,23 +14,11 @@ extension Reeeed {
         let (bg2Light, bg2Dark) = theme.background2.hexPair
         let (linkLight, linkDark) = theme.link.hexPair
 
-        let heroHTML: String = {
-            if let heroImage = heroImage {
-                do {
-                    let firstImageIndex = try estimateLinesUntilFirstImage(html: html)
-                    logger.info("First image index: \(firstImageIndex ?? 999)")
-                    // If there is no image in the first 10 elements, insert the hero image:
-                    if (firstImageIndex ?? 999) > 10 {
-                        let safeURL = Entities.escape(heroImage.absoluteString)
-                        return "<img class='__hero' src=\"\(safeURL)\" />"
-                    }
-                }
-                catch {
-                    logger.error("\(error)")
-                }
-            }
-            return ""
-        }()
+        var heroHTML: String = ""
+        if insertHeroImage, let hero = metadata.heroImage {
+            let safeURL = Entities.escape(hero.absoluteString)
+            heroHTML = "<img class='__hero' src=\"\(safeURL)\" />"
+        }
 
         let subtitle: String = {
             var partsHTML = [String]()
@@ -40,32 +29,20 @@ extension Reeeed {
                     partsHTML.append(separatorHTML)
                 }
             }
-            if let author {
+            if let author = extracted.author {
                 partsHTML.append(Entities.escape(author))
             }
             if let date {
                 appendSeparatorIfNecessary()
                 partsHTML.append(DateFormatter.shortDateOnly.string(from: date))
             }
-            if let host = baseURL?.hostWithoutWWW {
-                appendSeparatorIfNecessary()
-                partsHTML.append(host)
-            }
-            if partsHTML.count == 0 { return "" }
+            
+            appendSeparatorIfNecessary()
+            partsHTML.append(metadata.url.hostWithoutWWW)
+
+//            if partsHTML.count == 0 { return "" }
             return "<p class='__subtitle'>\(partsHTML.joined())</p>"
         }()
-
-//        let siteLine: String = {
-//            if let url = baseURL {
-//                var partsHTML = [String]()
-//                if let icon = url.googleFaviconURL {
-//                    partsHTML.append("<img class='__icon' src=\"\(Entities.escape(icon.absoluteString))\" />")
-//                }
-//                partsHTML.append(url.hostWithoutWWW)
-//                return "<div class='__site'>" + partsHTML.joined() + "</div>"
-//            }
-//            return ""
-//        }()
 
         let exitReaderButton: String
         if includeExitReaderButton {
@@ -231,7 +208,7 @@ figcaption, cite {
     
     <h1>\(escapedTitle)</h1>
         \(subtitle)
-        \(html)
+        \(extracted.content ?? "")
     <div id="__footer">
         <div class="label">Automatically converted to Reader Mode</div>
         \(exitReaderButton)
@@ -264,7 +241,7 @@ extension URL {
     }
 }
 
-private func estimateLinesUntilFirstImage(html: String) throws -> Int? {
+func estimateLinesUntilFirstImage(html: String) throws -> Int? {
     let doc = try HTMLDocument(data: html.data(using: .utf8)!)
     var lines = 0
     var linesBeforeFirst: Int?
@@ -275,20 +252,6 @@ private func estimateLinesUntilFirstImage(html: String) throws -> Int? {
         lines += el.estLineCount
     }
     return linesBeforeFirst
-
-//    var lines = 0
-//
-//    let soup = try SwiftSoup.parse(html)
-//    try soup.traverseElements { element in
-//        let tagName = element.tagName()
-//        if tagName == "img" {
-//            return lines
-//        } else if tags.contains(tagName) {
-//            elCount += 1
-//        }
-//    }
-//
-//    return firstImageIndex
 }
 
 extension Fuzi.XMLElement {
