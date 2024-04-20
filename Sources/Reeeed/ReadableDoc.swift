@@ -2,11 +2,16 @@ import Foundation
 
 public struct ReadableDoc: Equatable, Codable {
     public var extracted: ExtractedContent
+    public var html: String
     public var insertHeroImage: Bool
     public var metadata: SiteMetadata
     public var date: Date?
 
-    public init(extracted: ExtractedContent, insertHeroImage: Bool? /* autodetect if nil */, metadata: SiteMetadata, date: Date? = nil) {
+    public init?(extracted: ExtractedContent, insertHeroImage: Bool? /* autodetect if nil */, metadata: SiteMetadata, date: Date? = nil) {
+        guard let html = extracted.content else {
+            return nil
+        }
+        self.html = html
         self.extracted = extracted
         if let insertHeroImage {
             self.insertHeroImage = insertHeroImage

@@ -71,15 +71,17 @@ public enum Reeeed {
         }
         let baseURL = response.url ?? url
         let content = try await Reeeed.extractArticleContent(url: baseURL, html: html)
-        guard let extractedHTML = content.content else {
-            throw ExtractionError.MissingExtractionData
-        }
         let extractedMetadata = try? await SiteMetadata.extractMetadata(fromHTML: html, baseURL: baseURL)
-        return ReadableDoc(
+        guard let doc =  ReadableDoc(
             extracted: content,
             insertHeroImage: nil,
             metadata: extractedMetadata ?? SiteMetadata(url: url),
             date: content.datePublished)
+        else {
+            throw ExtractionError.MissingExtractionData
+        }
+        return doc
+
 //        let styledHTML = Reeeed.wrapHTMLInReaderStyling(html: extractedHTML, title: content.title ?? extractedMetadata?.title ?? "", baseURL: baseURL, author: content.author, heroImage: extractedMetadata?.heroImage, includeExitReaderButton: true, theme: theme, date: content.datePublished)
 //        return .init(metadata: extractedMetadata, extracted: content, styledHTML: styledHTML, baseURL: baseURL)
     }

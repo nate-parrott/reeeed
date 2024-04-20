@@ -15,6 +15,14 @@ public struct ExtractedContent: Equatable, Codable {
     public var title: String?
     public var excerpt: String?
     public var date_published: String?
+
+    public init(content: String? = nil, author: String? = nil, title: String? = nil, excerpt: String? = nil, date_published: String? = nil) {
+        self.content = content
+        self.author = author
+        self.title = title
+        self.excerpt = excerpt
+        self.date_published = date_published
+    }
 }
 
 extension ExtractedContent {

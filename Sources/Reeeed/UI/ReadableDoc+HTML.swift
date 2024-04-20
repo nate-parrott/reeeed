@@ -6,13 +6,6 @@ import Fuzi
 extension ReadableDoc {
     public func html(includeExitReaderButton: Bool, theme: ReaderTheme = .init()) -> String {
         let escapedTitle = Entities.escape(title?.byStrippingSiteNameFromPageTitle ?? "")
-//        let logger = Reeeed.logger
-
-        let (fgLight, fgDark) = theme.foreground.hexPair
-        let (fg2Light, fg2Dark) = theme.foreground2.hexPair
-        let (bgLight, bgDark) = theme.background.hexPair
-        let (bg2Light, bg2Dark) = theme.background2.hexPair
-        let (linkLight, linkDark) = theme.link.hexPair
 
         var heroHTML: String = ""
         if insertHeroImage, let hero = metadata.heroImage {
@@ -56,157 +49,14 @@ extension ReadableDoc {
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>\(escapedTitle)</title>
-<style>
-
-html, body {
-    margin: 0;
-}
-
-body {
-    color: \(fgLight);
-    background-color: \(bgLight);
-    overflow-wrap: break-word;
-    font: -apple-system-body;
-}
-
-.__hero {
-    display: block;
-    width: 100%;
-    height: 50vw;
-    max-height: 300px;
-    object-fit: cover;
-    overflow: hidden;
-    border-radius: 7px;
-}
-
-#__content {
-    line-height: 1.5;
-    font-size: 1.1em;
-    overflow-x: hidden;
-}
-
-@media screen and (min-width: 650px) {
-    #__content { font-size: 1.35em; line-height: 1.5; }
-}
-
-h1, h2, h3, h4, h5, h6 {
-    line-height: 1.2;
-    font-family: -apple-system;
-    font-size: 1.5em;
-    font-weight: 800;
-}
-
-img, iframe, object, video {
-    max-width: 100%;
-    height: auto;
-    border-radius: 7px;
-}
-
-pre {
-    max-width: 100%;
-    overflow-x: auto;
-}
-
-table {
-    display: block;
-    max-width: 100%;
-    overflow-x: auto;
-}
-
-a:link {
-    color: \(linkLight);
-}
-
-figure {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-figcaption, cite {
-    opacity: 0.5;
-    font-size: small;
-}
-
-.__subtitle {
-    font-weight: bold;
-    vertical-align: baseline;
-    opacity: 0.5;
-}
-
-.__subtitle .__icon {
-    width: 1.2em;
-    height: 1.2em;
-    object-fit: cover;
-    overflow: hidden;
-    border-radius: 3px;
-    margin-right: 0.3em;
-    position: relative;
-    top: 0.3em;
-}
-
-.__subtitle .__separator {
-    opacity: 0.5;
-}
-
-#__content {
-    padding: 1.5em;
-    margin: auto;
-    margin-top: 5px;
-    max-width: 700px;
-}
-
-@media (prefers-color-scheme: dark) {
-    body {
-        color: \(fgDark);
-        background-color: \(bgDark);
-    }
-    a:link { color: \(linkDark); }
-}
-
-#__footer {
-    margin-bottom: 4em;
-    margin-top: 2em;
-}
-
-#__footer > .label {
-    font-size: small;
-    opacity: 0.5;
-    text-align: center;
-    margin-bottom: 0.66em;
-    font-weight: 500;
-}
-
-#__footer > button {
-    padding: 0.5em;
-    text-align: center;
-    background-color: \(bg2Light);
-    font-weight: 500;
-    color: \(fg2Light);
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    font-size: 1em;
-    border: none;
-    border-radius: 0.5em;
-}
-
-@media (prefers-color-scheme: dark) {
-    #__footer > button {
-        background-color: \(bg2Dark);
-        color: \(fg2Dark);
-    }
-}
-
-\(theme.additionalCSS ?? "")
-
+<style id='__themeStyle'>
+\(theme.css)
 </style>
 <body>
 <div id='__content' style='opacity: 0'>
     \(heroHTML)
     
-    <h1>\(escapedTitle)</h1>
+    <h1 id='__title'>\(escapedTitle)</h1>
         \(subtitle)
         \(extracted.content ?? "")
     <div id="__footer">
@@ -224,6 +74,176 @@ figcaption, cite {
 </body>
 """
         return wrapped
+    }
+}
+
+extension ReaderTheme {
+    public var css: String {
+        let (fgLight, fgDark) = foreground.hexPair
+        let (fg2Light, fg2Dark) = foreground2.hexPair
+        let (bgLight, bgDark) = background.hexPair
+        let (bg2Light, bg2Dark) = background2.hexPair
+        let (linkLight, linkDark) = link.hexPair
+
+        return """
+        html, body {
+            margin: 0;
+        }
+
+        body {
+            color: \(fgLight);
+            background-color: \(bgLight);
+            overflow-wrap: break-word;
+            font: -apple-system-body;
+        }
+
+        .__hero {
+            display: block;
+            width: 100%;
+            height: 50vw;
+            max-height: 300px;
+            object-fit: cover;
+            overflow: hidden;
+            border-radius: 7px;
+        }
+
+        #__content {
+            line-height: 1.5;
+            font-size: 1.1em;
+            overflow-x: hidden;
+        }
+
+        @media screen and (min-width: 650px) {
+            #__content { font-size: 1.35em; line-height: 1.5; }
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            line-height: 1.2;
+            font-family: -apple-system;
+            font-size: 1.5em;
+            font-weight: 800;
+        }
+
+        #__title {
+            font-size: 1.8em;
+        }
+
+        img, iframe, object, video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 7px;
+        }
+
+        pre {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            display: block;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        a:link {
+            color: \(linkLight);
+        }
+
+        figure {
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        figcaption, cite {
+            opacity: 0.5;
+            font-size: small;
+        }
+
+        @media screen and (max-width: 500px) {
+            dd {
+                margin-inline-start: 20px; /* normally 40px */
+            }
+            blockquote {
+                margin-inline-start: 20px; /* normally 40px */
+                margin-inline-end: 20px; /* normally 40px */
+            }
+        }
+
+        .__subtitle {
+            font-weight: bold;
+            vertical-align: baseline;
+            opacity: 0.5;
+            font-size: 0.9em;
+        }
+
+        .__subtitle .__icon {
+            width: 1.2em;
+            height: 1.2em;
+            object-fit: cover;
+            overflow: hidden;
+            border-radius: 3px;
+            margin-right: 0.3em;
+            position: relative;
+            top: 0.3em;
+        }
+
+        .__subtitle .__separator {
+            opacity: 0.5;
+        }
+
+        #__content {
+            padding: 1.5em;
+            margin: auto;
+            margin-top: 5px;
+            max-width: 700px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                color: \(fgDark);
+                background-color: \(bgDark);
+            }
+            a:link { color: \(linkDark); }
+        }
+
+        #__footer {
+            margin-bottom: 4em;
+            margin-top: 2em;
+        }
+
+        #__footer > .label {
+            font-size: small;
+            opacity: 0.5;
+            text-align: center;
+            margin-bottom: 0.66em;
+            font-weight: 500;
+        }
+
+        #__footer > button {
+            padding: 0.5em;
+            text-align: center;
+            background-color: \(bg2Light);
+            font-weight: 500;
+            color: \(fg2Light);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            font-size: 1em;
+            border: none;
+            border-radius: 0.5em;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            #__footer > button {
+                background-color: \(bg2Dark);
+                color: \(fg2Dark);
+            }
+        }
+
+        \(additionalCSS ?? "")
+        """
     }
 }
 
