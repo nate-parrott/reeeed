@@ -76,6 +76,7 @@ extension Reeeed {
 
         let wrapped = """
 <!DOCTYPE html>
+<html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>\(escapedTitle)</title>
@@ -225,6 +226,7 @@ figcaption, cite {
 \(theme.additionalCSS ?? "")
 
 </style>
+</head>
 <body>
 <div id='__content' style='opacity: 0'>
     \(heroHTML)
@@ -245,6 +247,7 @@ figcaption, cite {
 </script>
 
 </body>
+</html>
 """
         return wrapped
     }
