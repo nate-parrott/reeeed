@@ -20,6 +20,7 @@ struct ContentView: View {
                 ArticleButton(title: "Test Article (Verge)", url: "https://www.theverge.com/2023/9/3/23857664/california-forever-tech-billionaire-secret-city")
                 ArticleButton(title: "Test Article (image at top)", url: "https://9to5mac.com/2023/09/08/apple-iphone-15-event-what-to-expect/")
                 ArticleButton(title: "Unextractable Page", url: "https://google.com")
+                ArticleButton(title: "Extract ISO Latin", url: "https://www.politicargentina.com/notas/202411/62138-are-you-pistarini-el-comico-posteo-de-la-afa-tras-el-episodio-entre-dillom-y-el-tuitero-libertario.html")
             }
             .frame(minWidth: 200)
         }
