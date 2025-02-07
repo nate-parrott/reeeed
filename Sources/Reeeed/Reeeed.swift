@@ -62,7 +62,7 @@ public enum Reeeed {
         }
     }
 
-    public static func fetchAndExtractContent(fromURL url: URL, theme: ReaderTheme = .init(), extractor: Extractor = .mercury) async throws -> FetchAndExtractionResult {
+    public static func fetchAndExtractContent(fromURL url: URL, extractor: Extractor = .mercury) async throws -> ReadableDoc {
         DispatchQueue.main.async { Reeeed.warmup() }
         
         let (data, response) = try await URLSession.shared.data(from: url)
@@ -71,11 +71,18 @@ public enum Reeeed {
         }
         let baseURL = response.url ?? url
         let content = try await Reeeed.extractArticleContent(url: baseURL, html: html)
-        guard let extractedHTML = content.content else {
+        let extractedMetadata = try? await SiteMetadata.extractMetadata(fromHTML: html, baseURL: baseURL)
+        guard let doc =  ReadableDoc(
+            extracted: content,
+            insertHeroImage: nil,
+            metadata: extractedMetadata ?? SiteMetadata(url: url),
+            date: content.datePublished)
+        else {
             throw ExtractionError.MissingExtractionData
         }
-        let extractedMetadata = try? await SiteMetadata.extractMetadata(fromHTML: html, baseURL: baseURL)
-        let styledHTML = Reeeed.wrapHTMLInReaderStyling(html: extractedHTML, title: content.title ?? extractedMetadata?.title ?? "", baseURL: baseURL, author: content.author, heroImage: extractedMetadata?.heroImage, includeExitReaderButton: true, theme: theme, date: content.datePublished)
-        return .init(metadata: extractedMetadata, extracted: content, styledHTML: styledHTML, baseURL: baseURL)
+        return doc
+
+//        let styledHTML = Reeeed.wrapHTMLInReaderStyling(html: extractedHTML, title: content.title ?? extractedMetadata?.title ?? "", baseURL: baseURL, author: content.author, heroImage: extractedMetadata?.heroImage, includeExitReaderButton: true, theme: theme, date: content.datePublished)
+//        return .init(metadata: extractedMetadata, extracted: content, styledHTML: styledHTML, baseURL: baseURL)
     }
 }

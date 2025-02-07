@@ -77,7 +77,7 @@ class MercuryExtractor: NSObject, WKUIDelegate, WKNavigationDelegate {
                 case .success(let resultOpt):
                     Reeeed.logger.info("Successfully extracted")
                     let content = self.parse(dict: resultOpt as? [String: Any])
-                    if let content, content.plainText.count >= 200 {
+                    if let content, content.extractPlainText.count >= 200 {
                         callback(content)
                     } else {
                         callback(nil)

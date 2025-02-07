@@ -11,13 +11,21 @@ public struct SiteMetadata: Equatable, Codable {
 
     private struct MetadataParseError: Error {}
 
+    public init(url: URL, title: String? = nil, description: String? = nil, heroImage: URL? = nil, favicon: URL? = nil) {
+        self.url = url
+        self.title = title
+        self.description = description
+        self.heroImage = heroImage
+        self.favicon = favicon
+    }
+
     public static func extractMetadata(fromHTML html: String, baseURL: URL) async throws -> SiteMetadata {
         try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.metadataExtractorQueue.async {
                 do {
-                    let doc = try HTMLDocument(string: html)
+                    let doc = try HTMLDocument(stringSAFE: html)
                     var md = SiteMetadata(url: baseURL)
-                    md.title = doc.ogTitle ?? doc.title
+                    md.title = (doc.ogTitle ?? doc.title)?.trimmingCharacters(in: .whitespacesAndNewlines)
                     md.heroImage = doc.ogImage(baseURL: baseURL)
                     md.description = doc.metaDescription?.nilIfEmpty
                     md.favicon = doc.favicon(baseURL: baseURL) ?? baseURL.inferredFaviconURL
