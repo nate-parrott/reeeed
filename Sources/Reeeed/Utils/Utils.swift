@@ -1,5 +1,15 @@
 import Foundation
 import SwiftUI
+import Fuzi
+
+extension HTMLDocument {
+    // Work around iOS 18 crash when doing HTMLDocument(string: ...) directly
+    // Seems to be fine if you convert the string to data first
+    public convenience init(stringSAFE: String) throws {
+        try self.init(data: Data(stringSAFE.utf8))
+    }
+}
+
 
 extension String {
     var asJSString: String {
@@ -46,3 +56,4 @@ func assertNotOnMainThread() {
     assert(!Thread.isMainThread)
     #endif
 }
+

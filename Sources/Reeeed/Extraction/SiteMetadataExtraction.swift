@@ -23,7 +23,7 @@ public struct SiteMetadata: Equatable, Codable {
         try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.metadataExtractorQueue.async {
                 do {
-                    let doc = try HTMLDocument(string: html)
+                    let doc = try HTMLDocument(stringSAFE: html)
                     var md = SiteMetadata(url: baseURL)
                     md.title = (doc.ogTitle ?? doc.title)?.trimmingCharacters(in: .whitespacesAndNewlines)
                     md.heroImage = doc.ogImage(baseURL: baseURL)
