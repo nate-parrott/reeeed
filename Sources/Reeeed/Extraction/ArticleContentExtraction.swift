@@ -66,14 +66,14 @@ extension ExtractedContent {
     }
 }
 
-extension XMLElement {
-    func traverseChildren(onEnterElement: (XMLElement) -> Void, onExitElement: (XMLElement) -> Void, onText: (String) -> Void) {
+extension Fuzi.XMLElement {
+    func traverseChildren(onEnterElement: (Fuzi.XMLElement) -> Void, onExitElement: (Fuzi.XMLElement) -> Void, onText: (String) -> Void) {
         for node in childNodes(ofTypes: [.Element, .Text]) {
             switch node.type {
             case .Text:
                 onText(node.stringValue)
             case .Element:
-                if let el = node as? XMLElement {
+                if let el = node as? Fuzi.XMLElement {
                     onEnterElement(el)
                     el.traverseChildren(onEnterElement: onEnterElement, onExitElement: onExitElement, onText: onText)
                     onExitElement(el)
